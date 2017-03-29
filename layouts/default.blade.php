@@ -16,7 +16,9 @@
                 <a href="#"><i class="icon-chevron-up"></i></a>
             </span>
             
-            {{ Theme::partial('defaultjs') }} 
+            {{ Theme::partial('defaultjs') }}
+            {{ Theme::asset()->scripts() }}
+            {{ Theme::asset()->container('footer')->scripts() }}
             {{ Theme::partial('analytic') }} 
         </div>       
     </body>
