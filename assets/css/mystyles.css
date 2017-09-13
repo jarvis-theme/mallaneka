@@ -1,1 +1,10 @@
-/*YOUR CUSTOM STYLES*/
+/*YOUR CUSTOM STYLES*/
+.owl-stage .owl-item{margin-right: 206px;}
+
+.owl-carousel .owl-item .slider-item-inner img {
+    width: 101%;
+    height: auto;
+    max-width: 1400px;
+    text-align: center;
+    margin: 0 auto;
+}

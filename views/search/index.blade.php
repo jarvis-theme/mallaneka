@@ -1,148 +1,143 @@
-<!-- Page title -->
-<div class="page-title">
-	<div class="container">
-		<h2><i class="icon-list-alt color"></i> Search</h2>
-		<hr />
-	</div>
-</div>
-<!-- Page title -->
-
-<!-- Page content -->			
-<div class="shop-items">
-	<div class="container">
-		<div class="row">
-			<div class="col-md-9 col-md-push-3">						 
-			<!-- Items List starts -->
-			@if($jumlahCari!=0)
-				<div class="row">
-					<!-- Item #1 -->
-					@foreach($hasilpro as $myproduk)
-					<div class="col-md-4 col-sm-4 col-xs-6">
-						<div class="item">
-							<!-- Use the below link to put HOT icon -->
-							@if(is_outstok($myproduk))
-								<div class="item-icon"><span class="label label-default">KOSONG</span></div>
-							@else
-								@if(is_terlaris($myproduk))
-									<div class="item-icon"><span class="label label-danger">HOT</span></div>
-								@endif
-								@if(is_produkbaru($myproduk))
-									<div class="item-icon"><span class="label label-info">BARU</span></div>
-								@endif
-							@endif
-							<!-- Item image -->
-							<div class="item-image">
-								<a href="{{product_url($myproduk)}}">{{HTML::image(product_image_url($myproduk->gambar1), $myproduk->nama, array('class="img-responsive" style="width:auto"'))}}</a>
-							</div>
-							<!-- Item details -->
-							<div class="item-details">
-								<!-- Name -->
-								<h5><a href="{{product_url($myproduk)}}">{{shortName($myproduk->nama,20)}}</a></h5>
-								<div class="clearfix"></div>
-								<!-- Para. Note more than 2 lines. -->
-								<p style="min-height:80px;">{{shortDescription($myproduk->deskripsi,100)}}...</p>
-								<hr />
-								<!-- Price -->
-								<div class="item-price pull-left" style="width:auto;padding: 0 3px;">{{price($myproduk->hargaJual)}}</div>
-								<!-- Add to cart -->
-								<div class="pull-right"><a href="{{product_url($myproduk)}}" class="btn btn-danger btn-sm">Lihat</a></div>
-								<div class="clearfix"></div>
-							</div>
-						</div>
-					</div>
-					@endforeach
-				</div>
-			<!-- Items List ends -->
-
-			@else
-				<div class="span12">
-					<div class="alert alert-danger">
-						<button type="button" class="close" data-dismiss="alert">&times;</button>
-						<h4>Oh, We're So Sorry</h4>
-						There is no product that matches the search criteria.
-					</div><!--end alert-->
-
-					<div class="search">
-						<div class="titleHeader clearfix">
-							<!-- <h3>Search</h3> -->
-						</div>
-
-						<div class="well well-small">
-							<form method="post" action="{{url('search')}}" class="form-inline">
-								<div class="input-group col-sm-6" style="float: none">
-							    	<input type="text" class="form-control" placeholder="Search" name="search" required>
-							    	<span class="input-group-btn">
-							    		<button class="btn btn-info" type="submit"><i class="icon-search"></i></button>
-							    	</span>
-							    </div>
-							</form><!--end form-->
-						</div><!--end well-->
-					</div><!--end search-->
-				</div><!--end span3-->
-			@endif						 
-			</div>
-
-			<div class="col-md-3 col-md-pull-9">
-				<div class="sidey">
-					<ul class="nav">
-						<li>
-							<a href="{{url('/')}}"><i class="icon-home"></i> &nbsp;Home</a>
-							@foreach (list_category() as $kat)
-								@if($kat->parent=='0')
-									<li>
-										<a href="{{category_url($kat)}}">{{shortName($kat->nama,20)}}</a>
-										@if($kat->anak->count())
-											<ul id="{{strtolower($kat->nama)}}" >
-											@foreach(list_category() as $submenu)
-												@if ($submenu->parent==$kat->id)
-												<li>
-													<a href="{{category_url($submenu)}}">{{$submenu->nama}}</a>
-													@if($submenu->anak->count() != 0)
-													<ul id="{{strtolower($submenu->nama)}}">
-														@foreach($submenu->anak as $submenu2)
-														@if($submenu2->parent == $submenu->id)
-														<li>
-															<a href="{{category_url($submenu2)}}" class="active" style="text-decoration: none;">{{$submenu2->nama}}</a>
-														</li>
-														@endif
-														@endforeach
-													</ul>
-													@endif
-												</li>
-												@endif
-											@endforeach
-											</ul>
-										@endif
-									</li>
-								@endif	
-							@endforeach
-						</li>
-					</ul>
-				</div>
-
-				@foreach(vertical_banner() as $item)
-				<div class="special">
-					<a href="{{url($item->url)}}">
-						<img width="213" src="{{banner_image_url($item->gambar)}}" />
-					</a>
-				</div>
-				<br>
-				@endforeach
-				@if($jumlahCari!=0)
-				<div class="form">
-					<h5>Search</h5>
-					<form action="{{url('search')}}" method="post" class="form-inline" role="form">
-						<div class="form-group">
-							<input type="text" class="form-control" id="search" name="search" placeholder="Cari" required>
-							<button type="submit" class="btn btn-info">Cari</button>
-						</div>
-					</form>
-				</div>
-				<br>
-				@endif
-			</div>
-		</div>
-		
-		<div class="sep-bor"></div>
-	</div>
-</div>
+<div class="container">
+    <header class="page-header">
+        <h1 class="page-title">Search</h1>
+        <ol class="breadcrumb page-breadcrumb">
+            <li><a href="{{url('home')}}">Home</a></li>
+            <li class="active">Search</li>
+        </ol>
+        @if($jumlahCari!=0)
+        <ul class="category-selections clearfix">
+            <li><span class="category-selections-sign">Sort by :</span>
+                <select class="category-selections-select" name="sort" id="sort" data-rel="{{URL::current()}}">
+                    <option value="az" {{Input::get('sort')=='az'?'selected="selected"':''}}>A - Z</option>
+                    <option value="za" {{Input::get('sort')=='za'?'selected="selected"':''}}>Z - A</option>
+                    <option value="high" {{Input::get('sort')=='high'?'selected="selected"':''}}>Most</option>
+                    <option value="low" {{Input::get('sort')=='low'?'selected="selected"':''}}>Cheapest</option>
+                    <option value="new" {{Input::get('sort')=='new'?'selected="selected"':''}}>Newest</option>
+                    <option value="old" {{Input::get('sort')=='old'?'selected="selected"':''}}>Oldest</option>
+                </select>
+            </li>
+            <li><span class="category-selections-sign">Items :</span>
+                <select class="category-selections-select" name="orderby" id="show" data-rel="{{URL::current()}}">
+                    <option value="40" {{Input::get('show')==40?'selected="selected"':''}}>40</option>
+                    <option value="60" {{Input::get('show')==60?'selected="selected"':''}}>60</option>
+                </select>
+            </li>
+        </ul>
+        @endif
+    </header>
+    <div class="row">
+        <div class="col-md-3">
+            <aside class="category-filters">
+                <div class="category-filters-section">
+                    <h3 class="widget-title-sm">Category</h3>
+                    <ul class="cateogry-filters-list">
+                        @foreach (list_category() as $kat)
+                            @if($kat->parent=='0')
+                                <li>
+                                    <a href="{{category_url($kat)}}">{{shortName($kat->nama,20)}}</a>
+                                    @if($kat->anak->count())
+                                        <ul id="{{strtolower($kat->nama)}}" class="cateogry-filters-list" style="margin-left: 10px;">
+                                        @foreach(list_category() as $submenu)
+                                            @if ($submenu->parent==$kat->id)
+                                            <li>
+                                                <a href="{{category_url($submenu)}}">{{$submenu->nama}}</a>
+                                                @if($submenu->anak->count() != 0)
+                                                <ul id="{{strtolower($submenu->nama)}}" class="cateogry-filters-list"  style="margin-left: 10px;">
+                                                    @foreach($submenu->anak as $submenu2)
+                                                    @if($submenu2->parent == $submenu->id)
+                                                    <li>
+                                                        <a href="{{category_url($submenu2)}}" class="active" style="text-decoration: none;">{{$submenu2->nama}}</a>
+                                                    </li>
+                                                    @endif
+                                                    @endforeach
+                                                </ul>
+                                                @endif
+                                            </li>
+                                            @endif
+                                        @endforeach
+                                        </ul>
+                                    @endif
+                                </li>
+                            @endif  
+                        @endforeach 
+                    </ul>
+                </div>
+                
+                <div class="category-filters-section">
+                    <h3 class="widget-title-sm">Collection</h3>
+                    @foreach (list_koleksi() as $kol)
+                        <a href="{{koleksi_url($kol)}}">
+                            <div class="checkbox">
+                                <label>{{$kol->nama}}<span class="category-filters-amount">({{ countCollection($kol->id)}})</span></label>
+                            </div>
+                        </a>
+                    @endforeach
+                </div>
+            </aside>
+        </div>
+        <div class="col-md-9">
+        @if($jumlahCari!=0)
+            @foreach($hasilpro as $key => $myproduk)
+                @if($key==0)
+                <div class="row" data-gutter="15">
+                @endif
+                    <div class="col-md-4">
+                        <div class="product">
+                            <ul class="product-labels">
+                                @if($myproduk->hargaCoret > 0)
+                                <li>
+                                    {{ discountPercent($myproduk->hargaJual,$myproduk->hargaCoret) }}
+                                </li>
+                                @endif
+                                @if(is_outstok($myproduk))
+                                    <li>KOSONG</li>
+                                @elseif(is_terlaris($myproduk))
+                                    <li>HOT</li>
+                                @elseif(is_produkbaru($myproduk))
+                                    <li>BARU</li>
+                                @endif
+                            </ul>
+                            <div class="product-img-wrap">
+                                <img class="product-img-primary" src="{{product_image_url($myproduk->gambar1, 'medium')}}" alt="{{$myproduk->nama}}" title="{{$myproduk->nama}}" />
+                                <img class="product-img-alt" src="{{product_image_url($myproduk->gambar2, 'medium')}}" alt="{{$myproduk->nama}}" title="{{$myproduk->nama}}" />
+                            </div>
+                            <a class="product-link" href="{{product_url($myproduk)}}"></a>
+                            <div class="product-caption">
+                                <h5 class="product-caption-title">{{$myproduk->nama}}</h5>
+                                <div class="product-caption-price">
+                                    @if($myproduk->hargaCoret > 0)
+                                    <span class="product-caption-price-old">{{ price($myproduk->hargaCoret) }}</span>
+                                    @endif
+                                    <span class="product-caption-price-new">{{ price($myproduk->hargaJual) }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @if($key+1 % 3 == 0)
+                </div>
+                <div class="row" data-gutter="15">
+                @elseif(($key+1) == count($hasilpro) || $key+1 == Input::get('show'))
+                </div>
+                @endif
+            @endforeach
+            <div class="gap"></div>
+            <div class="row">
+                <div class="col-md-6"></div>
+                <div class="col-md-6">
+                    <nav>
+                        {{ $hasilpro->links() }}
+                    </nav>
+                </div>
+            </div>
+        @else
+            <div class="alert alert-danger">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                <h4>Oh, We're So Sorry</h4>
+                There is no product that matches the search criteria.
+            </div>
+        @endif
+        </div>
+    </div>
+</div>
+<div class="gap"></div>

@@ -1,20 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
+    <head> 
         {{ Theme::partial('seostuff') }}
         {{ Theme::partial('defaultcss') }}
         {{ Theme::asset()->styles() }}
     </head>
     <body>
         <div class="global-wrapper clearfix" id="global-wrapper">
-            {{ Theme::partial('header') }}
-            <div class="gap"></div>
+            {{ Theme::partial('header') }} 
             {{ Theme::place('content') }}
             <div class="gap"></div>
             {{ Theme::partial('footer') }}
-            <span class="totop">
-                <a href="#"><i class="icon-chevron-up"></i></a>
-            </span>
             
             {{ Theme::partial('defaultjs') }}
             {{ Theme::asset()->scripts() }}
